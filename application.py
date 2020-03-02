@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
-channels = []
+channels = {}
 
 @app.route("/")
 def index():
@@ -16,18 +16,30 @@ def index():
 @app.route("/create", methods=['POST'])
 def create():
     name = request.form.get('name')
-    channels.append(name)
-    # checking that names are added
+    
+    # check that channel doesnt already exist
+    for key in channels:
+        if key == name:
+            return "error"
+
+    # add name as key to dictionary, with the value being an empty list
+    channels[name] = []
     return ""
 
 @app.route("/channels", methods=["GET"])
 def get_channels():
+    print(channels)
     return jsonify(channels)
 
 
-@app.route("/chatroom")
-def chatroom():
-    return "workin on it!"
+@app.route("/chatroom/<string:name>")
+def chatroom(name):
+    return "The name is {}".format(name)
+
+
+@app.route("/postMessage")
+def postMessage():
+    return ""
 
 if __name__ == "__main__":
     socketio.run(app)
