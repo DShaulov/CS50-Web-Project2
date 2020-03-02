@@ -10,20 +10,42 @@
         <nav class="navbar navbar-light bg-custom">
                 <a href="" class="navbar-brand col-2 offset-5" style="text-align: center;">
                     <span style="color: red">Chat</span>
-                    <span style="color: green;">room</span>
+                    <span style="color: green;">Room</span>
                 </a>
         </nav> 
         <br>
         <br>
         <br>
 
-        <div class="container-fluid">
+        <div class="container-fluid" hidden="true" id="nameForm">
             <h3 style="text-align: center; ">Please submit a display name</h3>
             <br>
-            <form action="" class="col-4 offset-4 ">
-                <input type="text" class="form-control" style="text-align: center;" placeholder="name">
+            <form action="" class="col-4 offset-4" onsubmit="addDisplayName()">
+                <input type="text" class="form-control" style="text-align: center;" placeholder="name" id="displayName">
                 <input type="submit" class="form-control btn btn-primary">
             </form>
         </div>
+        <div id="restOfApp">
+            <div class="container-fluid" style="text-align: center;">
+                <h3 id="userName"></h3>
+            </div>
+            <br><br>
+
+            <div class="container-fluid" style="text-align: center;" >
+                <div class="col-4 offset-4">
+                    <h3>Create New Channel</h3>
+                    <input type="text" placeholder="channel name" class="form-control" style="text-align: center;" id="channelName">
+                    <button class="btn btn-primary form-control col-5" id="createBtn">Create</button>
+                </div>
+            </div>
+            <br><br>
+            <div class="container-fluid" style="text-align: center;">
+                <h3>List Of Channels:</h3>
+                <div id="channelList">
+                        
+                </div>
+            </div>
+        </div>
     </body>
+    <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
 </html>
