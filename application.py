@@ -18,13 +18,16 @@ def create():
     name = request.form.get('name')
     channels.append(name)
     # checking that names are added
-    print(channels)
     return ""
 
 @app.route("/channels", methods=["GET"])
 def get_channels():
-    print(jsonify(channels))
     return jsonify(channels)
+
+
+@app.route("/chatroom")
+def chatroom():
+    return "workin on it!"
 
 if __name__ == "__main__":
     socketio.run(app)

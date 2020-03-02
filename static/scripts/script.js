@@ -31,7 +31,18 @@ document.querySelector('#createBtn').addEventListener('click', () => {
     const request = new XMLHttpRequest();
     request.open('POST', '/create');
     request.onload = () => {
-        
+
+        // ! maybe replace with some handlebars ////////////
+        // add the new channel name
+        const channelWrap = document.createElement('div');
+        channelWrap.className = 'channelWrap';
+        const channel = document.createElement('a');
+        channel.innerHTML = name;
+        channel.href = "/chatroom";
+
+        // adding the anchor to the div
+        channelWrap.append(channel)
+        document.querySelector('#channelList').append(channelWrap)
     }
     request.send(data);
 })
@@ -41,15 +52,28 @@ function requestChannels() {
     const request = new XMLHttpRequest();
     request.open('GET', '/channels')
     request.onload = () => {
-        console.log("The data has been recieved")
+        // get the response data (channel names), and for each one create
+        // an anchor with an href to the chatroom
         const data = JSON.parse(request.responseText);
-        console.log(data)
         for (let i = 0; i < data.length; i++){
-            const channel = document.createElement('p');
+            // creating a div for each channel name
+            const channelWrap = document.createElement('div');
+            channelWrap.className = 'channelWrap';
+            const channel = document.createElement('a');
             channel.innerHTML = data[i];
-            document.querySelector('#channelList').append(channel);
+            channel.href = "/chatroom";
+
+            // adding the anchor to the div
+            channelWrap.append(channel)
+            document.querySelector('#channelList').append(channelWrap);
         }
 
     };
     request.send();
 }
+
+// adding click button on enter 
+
+document.querySelector('#channelName').addEventListener('keyup', () => {
+    console.log('Key up!');
+});

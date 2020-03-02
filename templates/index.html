@@ -2,6 +2,7 @@
 
 <html lang="en">
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
         <title>ChatRoom</title>
@@ -13,11 +14,9 @@
                     <span style="color: green;">Room</span>
                 </a>
         </nav> 
-        <br>
-        <br>
-        <br>
 
         <div class="container-fluid" hidden="true" id="nameForm">
+            <br>
             <h3 style="text-align: center; ">Please submit a display name</h3>
             <br>
             <form action="" class="col-4 offset-4" onsubmit="addDisplayName()">
@@ -25,25 +24,35 @@
                 <input type="submit" class="form-control btn btn-primary">
             </form>
         </div>
-        <div id="restOfApp">
-            <div class="container-fluid" style="text-align: center;">
-                <h3 id="userName"></h3>
-            </div>
-            <br><br>
+        <div id="restOfApp" class="restOfApp row">
+            <div id="sidebar" class="col-3 sidebar">
+                <div class="container-fluid" style="text-align: center;">
+                    <h3 id="userName"></h3>
+                </div>
+                <br><br>
 
-            <div class="container-fluid" style="text-align: center;" >
-                <div class="col-4 offset-4">
-                    <h3>Create New Channel</h3>
-                    <input type="text" placeholder="channel name" class="form-control" style="text-align: center;" id="channelName">
-                    <button class="btn btn-primary form-control col-5" id="createBtn">Create</button>
+                <div class="container-fluid" style="text-align: center;" >
+                    <div>
+                        <h3>Create New Channel</h3>
+                        <input type="text" placeholder="channel name" class="form-control" style="text-align: center;" id="channelName">
+                        <button class="btn btn-primary form-control col-5" id="createBtn">Create</button>
+                    </div>
+                </div>
+                <br><br>
+                <div class="container-fluid" style="text-align: center;">
+                    <h3>List Of Channels:</h3>
+                    <div id="channelList">
+                            
+                    </div>
                 </div>
             </div>
-            <br><br>
-            <div class="container-fluid" style="text-align: center;">
-                <h3>List Of Channels:</h3>
-                <div id="channelList">
-                        
-                </div>
+
+            <! Chat Room>
+            <div class="col-1 participants">
+                <p>rest of participants</p>
+            </div>
+            <div id="chatroom" class="chatroom col-8">
+                <h1>This is gonna be the chatroom window</h1>
             </div>
         </div>
     </body>
