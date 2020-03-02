@@ -2,9 +2,11 @@
     background-color: #001f3f;
 }
 
-body {
-    background-color: cadetblue;
+body, html {
+    background-color: #001f3f;
     font-family: 'Times New Roman', Times, serif;
+    height: 100%;
+    overflow-x: hidden;
 }
 
 .channelWrap {
@@ -17,6 +19,7 @@ body {
 .chatroom {
     background-color: white;
     text-align: center;
+    padding: 0px;
 }
 
 .sidebar {
@@ -25,5 +28,11 @@ body {
 
 .participants {
     background-color: orange;
+}
+
+#messageType {
+    position: fixed;
+    bottom: 0px;
+    border: solid orange 2px;
 }
 

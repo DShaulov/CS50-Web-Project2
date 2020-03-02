@@ -17,14 +17,14 @@
 
         <div class="container-fluid" hidden="true" id="nameForm">
             <br>
-            <h3 style="text-align: center; ">Please submit a display name</h3>
+            <h3 style="text-align: center; color: green">Please submit a display name</h3>
             <br>
             <form action="" class="col-4 offset-4" onsubmit="addDisplayName()">
                 <input type="text" class="form-control" style="text-align: center;" placeholder="name" id="displayName">
                 <input type="submit" class="form-control btn btn-primary">
             </form>
         </div>
-        <div id="restOfApp" class="restOfApp row">
+        <div id="restOfApp" class="restOfApp row" style="height: 100%;">
             <div id="sidebar" class="col-3 sidebar">
                 <div class="container-fluid" style="text-align: center;">
                     <h3 id="userName"></h3>
@@ -47,12 +47,25 @@
                 </div>
             </div>
 
+
+
             <! Chat Room>
             <div class="col-1 participants">
-                <p>rest of participants</p>
+                <p>Who's in the room:</p>
             </div>
             <div id="chatroom" class="chatroom col-8">
-                <h1>This is gonna be the chatroom window</h1>
+                <div>
+                    <h1 id="channelNameHeader"></h1>
+                </div>
+                <div id="postsDiv">
+
+                </div>
+                <div id="">
+                    <form action="/postMessage" onsubmit="return checkEmptyMessage()" method="POST">
+                        <input type="text" placeholder="message" class="form-control" id="messageType" name="messageType">
+                        <input type="submit" hidden="true">
+                    </form>
+                </div>
             </div>
         </div>
     </body>

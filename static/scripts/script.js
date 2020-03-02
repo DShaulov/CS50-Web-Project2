@@ -1,6 +1,9 @@
 // Checking if user already provided display name
 document.addEventListener('DOMContentLoaded', () => {
+    // checking how it looks when local storage is cleared
+    //! localStorage.clear();
     let check = localStorage.getItem("displayName");
+    
     // if not, hide rest of site, reveal displayname creation
     if (check === null) {
         document.querySelector('#restOfApp').hidden = true;
@@ -48,7 +51,6 @@ document.querySelector('#createBtn').addEventListener('click', () => {
 
         // check if what came back is error that channel already exists
         const response = request.responseText;
-        console.log(response);
         if (response === 'error') {
             // create new error paragraph
             const error = document.createElement('p');
@@ -63,7 +65,6 @@ document.querySelector('#createBtn').addEventListener('click', () => {
 
         // remove error message if there was one previously
         else {
-            console.log(document.querySelector('#existsError'));
             if (document.querySelector('#existsError') != null) {
                 document.querySelector('#existsError').innerHTML = "";
             }
@@ -124,3 +125,17 @@ document.querySelector('#channelName').addEventListener('keyup', (event) => {
         document.querySelector('#createBtn').click();
     }
 });
+
+
+
+// making sure its not possbile to submit empty message
+
+function checkEmptyMessage(){
+    if (document.querySelector('#messageType').value == ''){
+        document.querySelector('#messageType').placeholder = "*cant send empty message";
+        return false;
+    }
+    else {
+        document.querySelector('#messageType').placeholder = "message";
+    }
+}

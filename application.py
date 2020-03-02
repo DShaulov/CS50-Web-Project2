@@ -34,11 +34,18 @@ def get_channels():
 
 @app.route("/chatroom/<string:name>")
 def chatroom(name):
-    return "The name is {}".format(name)
+    response = {}
+    response["channelName"] = name
+    return jsonify(response)
 
 
-@app.route("/postMessage")
+@app.route("/postMessage", methods=["POST"])
 def postMessage():
+    message = request.form.get('messageType')
+
+    # adding the message to the channels dict
+
+
     return ""
 
 if __name__ == "__main__":
