@@ -40,8 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     socket.on('updateMessages', data => {
-        console.log('updateMessages signal recieved');
-        console.log(data['channelName']['channelName']);
         getMessages(data['channelName']['channelName']);
     });
 
@@ -163,7 +161,13 @@ function requestChannels() {
                 // and enable message button
                 document.querySelector('#messageType').disabled = "";
                 document.querySelector('#messageType').placeholder = "enter message";
+
+                // adding the name of the channel to local storage
+                localStorage.setItem('channel', channel.innerHTML);
+                
                 getMessages(dataKeys[i]);
+                
+                
             } );
     
 
@@ -224,7 +228,7 @@ function getMessages(channel){
             textWrapper.className = "textWrapper";
             
             senderName.className = "senderName";
-            
+
             // if the user is the one who submitted the message, it should display his name as 'you'
             if (localStorage.getItem('displayName') == (Object.keys(response[0][i])[0])) {
                 senderName.innerHTML = "You"
@@ -234,7 +238,8 @@ function getMessages(channel){
                 senderName.innerHTML = (Object.keys(response[0][i])[0]);
             }
 
-            const lineBreak = document.createElement("br");
+            const lineBreak1 = document.createElement("br");
+            const lineBreak2 = document.createElement("br");
             // if the message being added belongs to the current user,
             // dsiplay it on the left side of the screen
             // otherwise display it on the right
@@ -244,9 +249,17 @@ function getMessages(channel){
             else {
                 textWrapper.style = "text-align: right;";
             }
+
+            // create a timestamp paragraph
+            const time = document.createElement('p');
+            time.innerHTML = response[0][i]['timeStamp'];
+            time.className = "timeStamp";
+
+
             
             textWrapper.append(senderName);
-            textWrapper.append(lineBreak);
+            textWrapper.append(time);
+            textWrapper.append(lineBreak1);
             textWrapper.append(text);
             document.querySelector('#messageWrapper').append(textWrapper);
         }

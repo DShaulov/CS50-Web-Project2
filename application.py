@@ -1,6 +1,6 @@
 import os
 import requests
-import time
+import datetime
 
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit
@@ -30,19 +30,16 @@ def create():
 
 @app.route("/channels", methods=["GET"])
 def get_channels():
-    print(channels)
     return jsonify(channels)
 
 
 @app.route("/chatroom/<string:name>")
 def chatroom(name):
     messages = channels[name]
-    print(messages)
     channelName = {"channelName": name}
     response = []
     response.append(messages)
     response.append(channelName)
-    
     return jsonify(response)
 
 
@@ -51,15 +48,21 @@ def postMessage():
     messageText = request.form.get('messageType')
     channelName = request.form.get('posterChannelName')
     userName = request.form.get('posterName')
+
+    # create a timestamp
+    now = datetime.datetime.now()
+    timeStamp = str(now.hour) + ":" 
+    if len(str(now.minute)) == 1:
+        timeStamp = timeStamp + "0" + str(now.minute)
+    else:
+        timeStamp = timeStamp + str(now.minute)
     
     # create the message in the form of a dictionary with the key being the name of user of created it
-    message = {userName: messageText}
+    message = {userName: messageText, 'timeStamp': timeStamp}
 
     # append the message into the list of messages stored in the dictionary
     messageList = channels[channelName]
     messageList.append(message)
-    print(channels)
-
     return ('', 204)
 
 @socketio.on('message submitted')

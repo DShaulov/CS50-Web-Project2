@@ -10,9 +10,9 @@
     </head>
     <body>
         <nav class="navbar navbar-light bg-custom">
-                <a href="" class="navbar-brand col-2 offset-5" style="text-align: center;">
-                    <span style="color: red">Chat</span>
-                    <span style="color: green;">Room</span>
+                <a href="" class="navbar-brand col-1 offset-1 myNav" style="text-align: left;">
+                    <span style="color: blue;">Chat</span>
+                    <span style="color: orange;">Room</span>
                 </a>
         </nav> 
 
@@ -27,22 +27,23 @@
         </div>
         <div id="restOfApp" class="restOfApp row" style="height: 100%;">
             <div id="sidebar" class="col-3 sidebar">
+                <br>
                 <div class="container-fluid" style="text-align: center;">
-                    <h3 id="userName"></h3>
+                    <h3 id="userName" class="announcement"></h3>
                 </div>
                 <br><br>
 
                 <div class="container-fluid" style="text-align: center;" >
                     <div id="channelCreateDiv">
-                        <h3>Create New Channel</h3>
-                        <input type="text" placeholder="channel name" class="form-control" style="text-align: center;" id="channelName">
-                        <button class="btn btn-primary form-control col-5" id="createBtn">Create</button>
+                        <h3 class="announcement">Create New Channel</h3>
+                        <input type="text" placeholder="channel name" class="form-control buttonPadding" style="text-align: center;" id="channelName">
+                        <button class="btn btn-primary form-control col-5 buttonPadding" id="createBtn">Create</button>
                         <button hidden id="emitterChannelCreated"></button>
                     </div>
                 </div>
                 <br><br>
                 <div class="container-fluid" style="text-align: center;" id="channelListDiv">
-                    <h3>List Of Channels:</h3>
+                    <h3 class="announcement">List Of Channels:</h3>
                     <div id="channelList">
                             
                     </div>
@@ -52,17 +53,14 @@
 
 
             <! Chat Room>
-            <div class="col-1 participants">
-                <p>Who's in the room:</p>
-            </div>
             <div id="chatroom" class="chatroom col-8">
                 <div>
-                    <h1 id="channelNameHeader" style="background-color: orange;">No Channel Selected</h1>
+                    <h1 id="channelNameHeader" style="background-color: orange;" class="col-12">No Channel Selected</h1>
                 </div>
                 <div id="postsDiv">
 
                 </div>
-                <div id="">
+                <div class="">
                     <input type="text" id="messageType" class="form-control" disabled="true" autocomplete="off">
                     <button onclick="messagePost()" id="submitterBtn" hidden></button>
                     <button id="emitterBtn" hidden></button>
