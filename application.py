@@ -34,19 +34,40 @@ def get_channels():
 
 @app.route("/chatroom/<string:name>")
 def chatroom(name):
-    response = {}
-    response["channelName"] = name
+    messages = channels[name]
+    print(messages)
+    channelName = {"channelName": name}
+    response = []
+    response.append(messages)
+    response.append(channelName)
+    
     return jsonify(response)
 
 
 @app.route("/postMessage", methods=["POST"])
 def postMessage():
-    message = request.form.get('messageType')
+    messageText = request.form.get('messageType')
+    channelName = request.form.get('posterChannelName')
+    userName = request.form.get('posterName')
+    
+    # create the message in the form of a dictionary with the key being the name of user of created it
+    message = {userName: messageText}
+
+    # append the message into the list of messages stored in the dictionary
+    messageList = channels[channelName]
+    messageList.append(message)
+
+    
+    print(channels)
+
+
 
     # adding the message to the channels dict
 
 
-    return ""
+    return ('', 204)
+
+
 
 if __name__ == "__main__":
     socketio.run(app)

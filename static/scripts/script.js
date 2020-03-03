@@ -22,11 +22,15 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 function addDisplayName() {
     let name = document.querySelector("#displayName").value;
     localStorage.setItem("displayName", name);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 document.querySelector('#createBtn').addEventListener('click', () => {
     // if field is empty, do nothing
     const name = document.querySelector('#channelName').value;
@@ -73,9 +77,18 @@ document.querySelector('#createBtn').addEventListener('click', () => {
         // add the new channel name
         const channelWrap = document.createElement('div');
         channelWrap.className = 'channelWrap';
-        const channel = document.createElement('a');
+        const channel = document.createElement('button');
         channel.innerHTML = name;
-        channel.href = "/chatroom/" + name;
+        channel.className = "form-control btn btn-primary";
+
+        // adding an event listener to each button!
+
+        channel.addEventListener('click',() => {
+            // on click, execute the funtion that goes to the chatroom route
+
+            console.log('it tickles :3')
+            getChannel(name);
+        } );
 
         // adding the anchor to the div
         channelWrap.append(channel)
@@ -83,6 +96,10 @@ document.querySelector('#createBtn').addEventListener('click', () => {
     }
     request.send(data);
 })
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// gets the list of channels from the flask server, and creates a button for each one in the sidebar
 
 function requestChannels() {
     const request = new XMLHttpRequest();
@@ -93,13 +110,20 @@ function requestChannels() {
         const data = JSON.parse(request.responseText);
         const dataKeys = Object.keys(data);
         for (let i = 0; i < dataKeys.length; i++){
-            // creating a div for each channel name
             const channelWrap = document.createElement('div');
             channelWrap.className = 'channelWrap';
-            const channel = document.createElement('a');
+            const channel = document.createElement('button');
             channel.innerHTML = dataKeys[i];
-            // make the href point to the chatroom path with the name appeneded at the end
-            channel.href = "/chatroom/" + dataKeys[i];
+            channel.className = "form-control btn btn-primary";
+    
+            // adding an event listener to each button!
+    
+            channel.addEventListener('click',() => {
+                // on click, execute the funtion that goes to the chatroom route
+    
+                getChannel(dataKeys[i]);
+            } );
+    
 
             // adding the anchor to the div
             channelWrap.append(channel)
@@ -139,3 +163,37 @@ function checkEmptyMessage(){
         document.querySelector('#messageType').placeholder = "message";
     }
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// a function that is getting the channel name and messages
+
+function getChannel(name){
+    const request = new XMLHttpRequest();
+    request.open('GET', "/chatroom/" + name);
+    request.onload = () => {
+        const response = JSON.parse(request.responseText);
+        console.log(response[0])
+        // set the title to be the channel name
+
+        document.querySelector('#channelNameHeader').innerHTML = response[1].channelName;
+
+        // set the posterChannelName input field to be the channel name
+
+        document.querySelector('#posterChannelName').value = response[1].channelName;
+
+        // set the posterName input  field to be the name of the current user
+
+        document.querySelector('#posterName').value = localStorage.getItem('displayName');
+
+        // add the messages associated with the channel to postdiv
+        for (let i = 0; i < response[0].length; i++){
+            const textWrapper = document.createElement('div');
+            const text = document.createElement('p');
+        }
+    };
+    request.send();
+}
+
+
+// an event listener to clear the message input field once a message has been submitted
