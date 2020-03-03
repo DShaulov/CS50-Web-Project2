@@ -37,10 +37,11 @@
                         <h3>Create New Channel</h3>
                         <input type="text" placeholder="channel name" class="form-control" style="text-align: center;" id="channelName">
                         <button class="btn btn-primary form-control col-5" id="createBtn">Create</button>
+                        <button hidden id="emitterChannelCreated"></button>
                     </div>
                 </div>
                 <br><br>
-                <div class="container-fluid" style="text-align: center;">
+                <div class="container-fluid" style="text-align: center;" id="channelListDiv">
                     <h3>List Of Channels:</h3>
                     <div id="channelList">
                             
@@ -62,13 +63,9 @@
 
                 </div>
                 <div id="">
-                    <form action="/postMessage" onsubmit="return false" method="POST" id="messageForm">
-                        <input type="text" placeholder="message" class="form-control" id="messageType" name="messageType">
-                        <input type="text" id="posterName" name="posterName" hidden>
-                        <input type="text" id="posterChannelName" name="posterChannelName" hidden>
-                        <input type="submit" hidden="true">
-                    </form>
-                    <button id="emitButton">Emit Button</button>
+                    <input type="text" id="messageType" class="form-control" disabled="true" autocomplete="off">
+                    <button onclick="messagePost()" id="submitterBtn" hidden></button>
+                    <button id="emitterBtn" hidden></button>
                 </div>
             </div>
         </div>

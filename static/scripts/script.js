@@ -25,20 +25,28 @@ document.addEventListener('DOMContentLoaded', () => {
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
     socket.on('connect', () => {
-        console.log('the socket is connected')
+
         // add a function to the hidden button on the submit message form
-        document.querySelector('#emitButton').onclick = () => {
-            console.log('clicked the emitter');
-            socket.emit('message submitted');
+        document.querySelector('#emitterBtn').onclick = () => {
+            // pass along the channel name with the emitter
+            const channelName = document.querySelector('#channelNameHeader').innerHTML;
+            socket.emit('message submitted', {'channelName': channelName});
+        };
+
+        // add a function to emit a channel creation event
+        document.querySelector('#emitterChannelCreated').onclick = () => {
+            socket.emit('channelCreated');
         };
     })
 
-    socket.on('updateMessages', () => {
-        console.log('updateMessages signal recieved')
+    socket.on('updateMessages', data => {
+        console.log('updateMessages signal recieved');
+        console.log(data['channelName']['channelName']);
+        getMessages(data['channelName']['channelName']);
     });
 
-    socket.on('message posted', () => {
-        console.log('a message has been posted')
+    socket.on('updateChannels', () => {
+        requestChannels();
     });
 })
 
@@ -107,13 +115,15 @@ document.querySelector('#createBtn').addEventListener('click', () => {
         channel.addEventListener('click',() => {
             // on click, execute the funtion that goes to the chatroom route
 
-            console.log('it tickles :3')
-            getChannel(name);
+            getMessages(name);
         } );
 
         // adding the anchor to the div
-        channelWrap.append(channel)
-        document.querySelector('#channelList').append(channelWrap)
+        channelWrap.append(channel);
+        document.querySelector('#channelList').append(channelWrap);
+
+        // emit a signal that a new channel has been created
+        document.querySelector('#emitterChannelCreated').click();
     }
     request.send(data);
 })
@@ -141,14 +151,17 @@ function requestChannels() {
     
             channel.addEventListener('click',() => {
                 // on click, execute the funtion that goes to the chatroom route
-    
-                getChannel(dataKeys[i]);
+                // and enable message button
+                document.querySelector('#messageType').disabled = "";
+                document.querySelector('#messageType').placeholder = "enter message";
+                getMessages(dataKeys[i]);
             } );
     
 
             // adding the anchor to the div
             channelWrap.append(channel)
             document.querySelector('#channelList').append(channelWrap);
+
         }
 
     };
@@ -170,38 +183,17 @@ document.querySelector('#channelName').addEventListener('keyup', (event) => {
         document.querySelector('#createBtn').click();
     }
 });
-
-
-
-// making sure its not possbile to submit empty message
-
-function checkEmptyMessage(){
-    if (document.querySelector('#messageType').value == ''){
-        document.querySelector('#messageType').placeholder = "*cant send empty message";
-        return false;
-    }
-    else {
-        document.querySelector('#messageType').placeholder = "message";
-    }
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////////
 // a function that is getting the channel name and messages
+// going the chatroom route
 
-function getChannel(name){
+function getMessages(channel){
     const request = new XMLHttpRequest();
-    request.open('GET', "/chatroom/" + name);
+    request.open('GET', "/chatroom/" + channel);
     request.onload = () => {
         const response = JSON.parse(request.responseText);
         // set the title to be the channel name
         document.querySelector('#channelNameHeader').innerHTML = response[1].channelName;
-
-        // set the posterChannelName input field to be the channel name
-        document.querySelector('#posterChannelName').value = response[1].channelName;
-
-        // set the posterName input  field to be the name of the current user
-        document.querySelector('#posterName').value = localStorage.getItem('displayName');
 
         // if messageWrapper exists, remove it, so as to not display the same messages twice
         if (document.querySelector('#messageWrapper') != null) {
@@ -236,14 +228,36 @@ function getChannel(name){
     request.send();
 }
 
-// adding an event listener to the form that fires on submit
 
 
-//! thinking maybe it doesnt work properly
 // add an event listener to the message input field that listens on enter press
 document.querySelector('#messageType').addEventListener('keyup', (event) => {
     if (event.keyCode === 13) {
-        document.querySelector('#messageForm').submit();
-        document.querySelector('#emitButton').click();
+        document.querySelector('#submitterBtn').click();
     }
 });
+
+
+
+// posts the message the user has inputted to the flask server
+
+function messagePost() {
+    if (document.querySelector('#messageType').value == "") {
+        return;
+    }
+    const request = new XMLHttpRequest();
+    const data = new FormData();
+
+    data.append('messageType', document.querySelector('#messageType').value);
+    data.append('posterChannelName', document.querySelector('#channelNameHeader').innerHTML);
+    data.append('posterName', localStorage.getItem('displayName'));
+
+    request.open('POST', '/postMessage');
+    request.onload = () => {
+        document.querySelector('#emitterBtn').click();
+        document.querySelector('#messageType').value = '';
+    }
+
+    request.send(data);
+
+}

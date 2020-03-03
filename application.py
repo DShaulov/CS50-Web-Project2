@@ -62,8 +62,13 @@ def postMessage():
     return ('', 204)
 
 @socketio.on('message submitted')
-def messageSubmitted():
-    emit('updateMessages')
+def messageSubmitted(channelName):
+    emit('updateMessages', {'channelName': channelName}, broadcast=True)
+
+
+@socketio.on('channelCreated')
+def channelCreated():
+    emit('updateChannels', broadcast=True)
     
 
 if __name__ == "__main__":
