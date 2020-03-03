@@ -1,4 +1,5 @@
 import os
+import requests
 
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit
@@ -56,18 +57,14 @@ def postMessage():
     # append the message into the list of messages stored in the dictionary
     messageList = channels[channelName]
     messageList.append(message)
-
-    
     print(channels)
-
-
-
-    # adding the message to the channels dict
-
 
     return ('', 204)
 
-
+@socketio.on('message submitted')
+def messageSubmitted():
+    emit('updateMessages')
+    
 
 if __name__ == "__main__":
     socketio.run(app)

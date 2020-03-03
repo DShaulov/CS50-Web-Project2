@@ -62,13 +62,13 @@
 
                 </div>
                 <div id="">
-                    <form action="/postMessage" onsubmit="return checkEmptyMessage()" method="POST">
+                    <form action="/postMessage" onsubmit="return false" method="POST" id="messageForm">
                         <input type="text" placeholder="message" class="form-control" id="messageType" name="messageType">
                         <input type="text" id="posterName" name="posterName" hidden>
                         <input type="text" id="posterChannelName" name="posterChannelName" hidden>
                         <input type="submit" hidden="true">
                     </form>
-                    <button id="emitButton" hidden></button>
+                    <button id="emitButton">Emit Button</button>
                 </div>
             </div>
         </div>

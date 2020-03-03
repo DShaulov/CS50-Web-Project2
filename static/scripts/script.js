@@ -28,9 +28,18 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('the socket is connected')
         // add a function to the hidden button on the submit message form
         document.querySelector('#emitButton').onclick = () => {
-            console.log('The emit button has been clicked')
+            console.log('clicked the emitter');
+            socket.emit('message submitted');
         };
     })
+
+    socket.on('updateMessages', () => {
+        console.log('updateMessages signal recieved')
+    });
+
+    socket.on('message posted', () => {
+        console.log('a message has been posted')
+    });
 })
 
 
@@ -227,10 +236,14 @@ function getChannel(name){
     request.send();
 }
 
+// adding an event listener to the form that fires on submit
 
+
+//! thinking maybe it doesnt work properly
 // add an event listener to the message input field that listens on enter press
 document.querySelector('#messageType').addEventListener('keyup', (event) => {
     if (event.keyCode === 13) {
+        document.querySelector('#messageForm').submit();
         document.querySelector('#emitButton').click();
     }
 });
