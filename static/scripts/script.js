@@ -136,6 +136,15 @@ function requestChannels() {
     const request = new XMLHttpRequest();
     request.open('GET', '/channels')
     request.onload = () => {
+        // remove the old div so as to not create duplicates
+        document.querySelector('#channelList').remove();
+
+        // create new one in order to append new channel names to
+        const newDiv = document.createElement('div');
+        newDiv.id = "channelList";
+
+        // append the new div
+        document.querySelector('#channelListDiv').append(newDiv);
         // get the response data (channel names), and for each one create
         // an anchor with an href to the chatroom
         const data = JSON.parse(request.responseText);
@@ -208,9 +217,24 @@ function getMessages(channel){
         for (let i = 0; i < response[0].length; i++){
             const textWrapper = document.createElement('div');
             const text = document.createElement('p');
+            const senderName = document.createElement('p')
+
             text.innerHTML = (Object.values(response[0][i]))[0];
             text.className = "message";
             textWrapper.className = "textWrapper";
+            
+            senderName.className = "senderName";
+            
+            // if the user is the one who submitted the message, it should display his name as 'you'
+            if (localStorage.getItem('displayName') == (Object.keys(response[0][i])[0])) {
+                senderName.innerHTML = "You"
+            }
+
+            else {
+                senderName.innerHTML = (Object.keys(response[0][i])[0]);
+            }
+
+            const lineBreak = document.createElement("br");
             // if the message being added belongs to the current user,
             // dsiplay it on the left side of the screen
             // otherwise display it on the right
@@ -221,6 +245,8 @@ function getMessages(channel){
                 textWrapper.style = "text-align: right;";
             }
             
+            textWrapper.append(senderName);
+            textWrapper.append(lineBreak);
             textWrapper.append(text);
             document.querySelector('#messageWrapper').append(textWrapper);
         }

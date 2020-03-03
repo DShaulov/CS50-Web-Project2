@@ -29,7 +29,7 @@ body, html {
 }
 
 .participants {
-    background-color: orange;
+    background-color: green;
 }
 
 #messageType {
@@ -43,9 +43,18 @@ body, html {
     padding: 5px;
     display: inline;
     border-radius: 30px;
+    font-size: large;
 }
 
 .textWrapper {
     margin-top: 10px;
+}
+
+.senderName {
+    background-color: orange;
+    padding: 5px;
+    border-radius: 30px;
+    display: inline;
+    color: blue;
 }
 
