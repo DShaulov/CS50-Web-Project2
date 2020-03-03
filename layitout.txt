@@ -1,0 +1,4 @@
+1. connect to a socket on domcontentloaded
+2. once a message has been submitted, emit a javascript event
+3. recive event on flask server
+4. update 

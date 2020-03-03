@@ -19,7 +19,7 @@ body, html {
 .chatroom {
     background-color: white;
     text-align: center;
-    padding: 0px;
+    padding-left: 0px;
     overflow: auto;
 }
 
@@ -36,5 +36,16 @@ body, html {
     position: fixed;
     bottom: 0px;
     border: solid orange 2px;
+}
+
+.message {
+    background-color: orange;
+    padding: 5px;
+    display: inline;
+    border-radius: 30px;
+}
+
+.textWrapper {
+    margin-top: 10px;
 }
 

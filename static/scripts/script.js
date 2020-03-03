@@ -19,6 +19,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // populate list of channels
     requestChannels();
+
+
+    // create a socket
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
+    socket.on('connect', () => {
+        console.log('the socket is connected')
+        // add a function to the hidden button on the submit message form
+        document.querySelector('#emitButton').onclick = () => {
+            console.log('The emit button has been clicked')
+        };
+    })
 })
 
 
@@ -173,27 +185,52 @@ function getChannel(name){
     request.open('GET', "/chatroom/" + name);
     request.onload = () => {
         const response = JSON.parse(request.responseText);
-        console.log(response[0])
         // set the title to be the channel name
-
         document.querySelector('#channelNameHeader').innerHTML = response[1].channelName;
 
         // set the posterChannelName input field to be the channel name
-
         document.querySelector('#posterChannelName').value = response[1].channelName;
 
         // set the posterName input  field to be the name of the current user
-
         document.querySelector('#posterName').value = localStorage.getItem('displayName');
 
+        // if messageWrapper exists, remove it, so as to not display the same messages twice
+        if (document.querySelector('#messageWrapper') != null) {
+            document.querySelector('#messageWrapper').remove();
+        }
+
+        // add an aditional div wrapper so it can be easier to remove all messages
+        const messageWrapper = document.createElement('div');
+        messageWrapper.id = "messageWrapper";
+        document.querySelector('#postsDiv').append(messageWrapper);
         // add the messages associated with the channel to postdiv
         for (let i = 0; i < response[0].length; i++){
             const textWrapper = document.createElement('div');
             const text = document.createElement('p');
+            text.innerHTML = (Object.values(response[0][i]))[0];
+            text.className = "message";
+            textWrapper.className = "textWrapper";
+            // if the message being added belongs to the current user,
+            // dsiplay it on the left side of the screen
+            // otherwise display it on the right
+            if (localStorage.getItem('displayName') == Object.keys(response[0][i])[0]) {
+                textWrapper.style = "text-align: left;";
+            }
+            else {
+                textWrapper.style = "text-align: right;";
+            }
+            
+            textWrapper.append(text);
+            document.querySelector('#messageWrapper').append(textWrapper);
         }
     };
     request.send();
 }
 
 
-// an event listener to clear the message input field once a message has been submitted
+// add an event listener to the message input field that listens on enter press
+document.querySelector('#messageType').addEventListener('keyup', (event) => {
+    if (event.keyCode === 13) {
+        document.querySelector('#emitButton').click();
+    }
+});
