@@ -6,7 +6,9 @@ body, html {
     background-color: green;
     font-family: 'Times New Roman', Times, serif;
     height: 100%;
+    width: 100%;
     overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 .channelWrap {
@@ -18,10 +20,13 @@ body, html {
 }
 
 .chatroom {
+    border: 10px solid orange;
     background-color: white;
     text-align: center;
-    padding-left: 0px;
     overflow: auto;
+    padding: 0px;
+    overflow-y: scroll;
+    height: 100%;
 }
 
 .sidebar {
@@ -34,23 +39,26 @@ body, html {
 }
 
 #messageType {
-    position: absolute;
+    position: fixed;
     bottom: 0px;
     border: solid orange 10px;
-    border-radius: 25px;
+    border-radius: 20px;
     padding: 15px;
+    width: 67%;
 }
 
 .message {
     background-color: orange;
     padding: 5px;
     display: inline;
-    border-radius: 30px;
+    border-radius: 25px;
     font-size: large;
 }
 
 .textWrapper {
     margin-top: 10px;
+    margin-bottom: 10px;
+    margin: 10px;
 }
 
 .senderName {
@@ -86,5 +94,18 @@ body, html {
 
 .myNav {
     padding: 0px;
-    font-size: x-large;
+    font-size: xx-large;
+}
+
+.btn {
+    border-radius: 25px;
+}
+
+.channelTitle {
+    background-color: orange;
+    border-radius:15px;
+    padding: 6px;
+    position: absolute;
+    top: 0px;
+    width:96%;
 }

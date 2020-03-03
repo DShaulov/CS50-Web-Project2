@@ -9,64 +9,76 @@
         <title>ChatRoom</title>
     </head>
     <body>
-        <nav class="navbar navbar-light bg-custom">
-                <a href="" class="navbar-brand col-1 offset-1 myNav" style="text-align: left;">
-                    <span style="color: blue;">Chat</span>
-                    <span style="color: orange;">Room</span>
-                </a>
-        </nav> 
-
-        <div class="container-fluid" hidden="true" id="nameForm">
-            <br>
-            <h3 style="text-align: center; color: green">Please submit a display name</h3>
-            <br>
-            <form action="" class="col-4 offset-4" onsubmit="addDisplayName()">
-                <input type="text" class="form-control" style="text-align: center;" placeholder="name" id="displayName">
-                <input type="submit" class="form-control btn btn-primary">
-            </form>
+        <div style="height: 5%;">
+            <a href="" class="navbar-brand col-1 offset-1 myNav" style="text-align: left;">
+                <span style="color: blue;">Chat</span>
+                <span style="color: orange;">Room</span>
+            </a>
         </div>
-        <div id="restOfApp" class="restOfApp row" style="height: 100%;">
-            <div id="sidebar" class="col-3 sidebar">
+
+
+        <div style="height: 95%;">
+            <div class="container-fluid" hidden="true" id="nameForm">
                 <br>
-                <div class="container-fluid" style="text-align: center;">
-                    <h3 id="userName" class="announcement"></h3>
-                </div>
-                <br><br>
-
-                <div class="container-fluid" style="text-align: center;" >
-                    <div id="channelCreateDiv">
-                        <h3 class="announcement">Create New Channel</h3>
-                        <input type="text" placeholder="channel name" class="form-control buttonPadding" style="text-align: center;" id="channelName">
-                        <button class="btn btn-primary form-control col-5 buttonPadding" id="createBtn">Create</button>
-                        <button hidden id="emitterChannelCreated"></button>
-                    </div>
-                </div>
-                <br><br>
-                <div class="container-fluid" style="text-align: center;" id="channelListDiv">
-                    <h3 class="announcement">List Of Channels:</h3>
-                    <div id="channelList">
-                            
-                    </div>
-                </div>
+                <h3 style="text-align: center; color: green">Please submit a display name</h3>
+                <br>
+                <form action="" class="col-4 offset-4" onsubmit="addDisplayName()">
+                    <input type="text" class="form-control" style="text-align: center;" placeholder="name" id="displayName">
+                    <input type="submit" class="form-control btn btn-primary">
+                </form>
             </div>
+            <div id="restOfApp" class="restOfApp row" style="height: 100%;">
+                <div id="sidebar" class="col-3 sidebar">
+                    <br>
+                    <div class="container-fluid" style="text-align: center;">
+                        <h3 id="userName" class="announcement"></h3>
+                    </div>
+                    
 
-
-
-            <! Chat Room>
-            <div id="chatroom" class="chatroom col-8">
-                <div>
-                    <h1 id="channelNameHeader" style="background-color: orange;" class="col-12">No Channel Selected</h1>
+                    <div class="container-fluid" style="text-align: center;" >
+                        <div id="channelCreateDiv">
+                            <h3 class="announcement">Create New Channel</h3>
+                            <input type="text" placeholder="channel name" class="form-control buttonPadding" style="text-align: center;" id="channelName">
+                            <button class="btn btn-primary form-control col-5 buttonPadding " id="createBtn">Create</button>
+                            <button hidden id="emitterChannelCreated"></button>
+                        </div>
+                    </div>
+                    <br><br>
+                    <div class="container-fluid" style="text-align: center;" id="channelListDiv">
+                        <h3 class="announcement">List Of Channels:</h3>
+                        <div id="channelList">
+                                
+                        </div>
+                    </div>
                 </div>
-                <div id="postsDiv">
 
+
+
+                <! Chat Room>
+                <div style="height: 96%;" class="col-8">
+                    <div id="chatroom" class="chatroom">
+                        <div>
+                            <h1 id="channelNameHeader" class="col-12 channelTitle">No Channel Selected</h1>
+                        </div>
+                        <div id="postsDiv">
+                            <br>
+                            <br>
+                        </div>
+                        <div class="">
+                            <button onclick="messagePost()" id="submitterBtn" hidden></button>
+                            <button id="emitterBtn" hidden></button>
+                        </div>
+                    </div>
                 </div>
-                <div class="">
-                    <input type="text" id="messageType" class="form-control" disabled="true" autocomplete="off">
-                    <button onclick="messagePost()" id="submitterBtn" hidden></button>
-                    <button id="emitterBtn" hidden></button>
+
+                <div style="height: 5%;" class="col-8 offset-3">
+                    <input type="text" id="messageType" class="form-control" disabled="true" autocomplete="off" style="width: 66.5%;">
                 </div>
             </div>
         </div>
+
+
+
     </body>
     <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
 </html>

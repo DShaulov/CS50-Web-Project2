@@ -106,7 +106,7 @@ document.querySelector('#createBtn').addEventListener('click', () => {
         channelWrap.className = 'channelWrap';
         const channel = document.createElement('button');
         channel.innerHTML = name;
-        channel.className = "form-control btn btn-primary";
+        channel.className = "form-control btn btn-primary channelBorder";
 
         // adding an event listener to each button!
 
@@ -261,6 +261,7 @@ function getMessages(channel){
             textWrapper.append(time);
             textWrapper.append(lineBreak1);
             textWrapper.append(text);
+            textWrapper.append(lineBreak2);
             document.querySelector('#messageWrapper').append(textWrapper);
         }
     };
