@@ -60,8 +60,14 @@ def postMessage():
     # create the message in the form of a dictionary with the key being the name of user of created it
     message = {userName: messageText, 'timeStamp': timeStamp}
 
-    # append the message into the list of messages stored in the dictionary
+    # get the the messages associated with the channel from the dictionary
     messageList = channels[channelName]
+
+    # if there are 100 messages, delete the first
+    if len(messageList) == 100:
+        del messageList[0]
+
+    # append the message into the list of messages stored in the dictionary
     messageList.append(message)
     return ('', 204)
 
@@ -73,6 +79,12 @@ def messageSubmitted(channelName):
 @socketio.on('channelCreated')
 def channelCreated():
     emit('updateChannels', broadcast=True)
+
+@socketio.on('disconnected')
+def disconnected(data):
+    print("eyyy got the disconnected message!")
+    print("The user who disconnected is: " + data['userName'])
+    emit('userDisconnected', broadcast=True)
     
 
 if __name__ == "__main__":

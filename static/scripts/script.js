@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
     requestChannels();
 
 
+    
+
+
     // create a socket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
@@ -39,6 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     })
 
+    socket.on('disconnect', () => {
+        socket.emit('disconnected')
+    });
+
     socket.on('updateMessages', data => {
         getMessages(data['channelName']['channelName']);
     });
@@ -46,7 +53,18 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('updateChannels', () => {
         requestChannels();
     });
+
+
+    // once someone closes the window, disconnect the socket
+    window.onbeforeunload = () => {
+        socket.emit('disconnected', {"userName": localStorage.getItem('displayName')});
+    }
+
+    socket.on('userDisconnected', () => {
+        console.log('ey a user was disconnected!');
+    });
 })
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +114,7 @@ document.querySelector('#createBtn').addEventListener('click', () => {
 
         // remove error message if there was one previously
         else {
-            if (document.querySelector('#existsError') != null) {
+            if (document.querySelector('#existsError') != undefined) {
                 document.querySelector('#existsError').innerHTML = "";
             }
         }
@@ -107,6 +125,7 @@ document.querySelector('#createBtn').addEventListener('click', () => {
         const channel = document.createElement('button');
         channel.innerHTML = name;
         channel.className = "form-control btn btn-primary channelBorder";
+        channel.id = "CH" + name;
 
         // adding an event listener to each button!
 
@@ -153,6 +172,7 @@ function requestChannels() {
             const channel = document.createElement('button');
             channel.innerHTML = dataKeys[i];
             channel.className = "form-control btn btn-primary";
+            channel.id = "CH" + dataKeys[i];
     
             // adding an event listener to each button!
     
@@ -166,8 +186,25 @@ function requestChannels() {
                 localStorage.setItem('channel', channel.innerHTML);
                 
                 getMessages(dataKeys[i]);
-                
-                
+
+                // adding the name of the user who clicked to the list of people in the room
+                //const newUser = document.createElement('p');
+                //newUser.innerHTML = localStorage.getItem('displayName');
+                //newUser.className = "announcement";
+                //newUser.style = "text-align: center;";
+
+                // if user already added, dont add him again
+                //for (let i = 0; i < document.querySelector('#whosIn').childElementCount; i++) {
+                   // if (document.querySelector('#whosIn').children[i]['innerText'] == localStorage.getItem('displayName')) {
+                       // break;
+                   // }
+
+                   // else {
+                        // if this is the last pass, append the element
+                      //  if (i == document.querySelector('#whosIn').childElementCount - 1)
+                       // document.querySelector('#whosIn').append(newUser);
+                   // }
+               // }
             } );
     
 
@@ -175,6 +212,17 @@ function requestChannels() {
             channelWrap.append(channel)
             document.querySelector('#channelList').append(channelWrap);
 
+        }
+
+        // if a user has already visited a channel, go there!
+        if (localStorage.getItem('channel') != null) {
+            const previousChannel = "CH" + localStorage.getItem('channel');
+            console.log(previousChannel)
+            
+            if (document.getElementById(previousChannel) != null) {
+                document.getElementById(previousChannel).click();
+            }
+            
         }
 
     };
@@ -263,6 +311,9 @@ function getMessages(channel){
             textWrapper.append(text);
             textWrapper.append(lineBreak2);
             document.querySelector('#messageWrapper').append(textWrapper);
+
+            // auto-scroll to the bottom of the chat window
+            document.querySelector('#chatroom').scrollTop = document.querySelector('#chatroom').scrollHeight;
         }
     };
     request.send();
