@@ -9,6 +9,10 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
+# stores the channels created and the current users in each of them
+participants = {}
+
+# stores the channels created and the messages associated with them
 channels = {}
 
 @app.route("/")
@@ -26,6 +30,9 @@ def create():
 
     # add name as key to dictionary, with the value being an empty list
     channels[name] = []
+
+    # add name as key to participants
+    participants[name] = []
     return ""
 
 @app.route("/channels", methods=["GET"])
@@ -71,6 +78,11 @@ def postMessage():
     messageList.append(message)
     return ('', 204)
 
+
+@app.route('/getParticipants', methods=['POST'])
+def getParticipants():
+    return jsonify(participants[request.form.get('channel')])
+
 @socketio.on('message submitted')
 def messageSubmitted(channelName):
     emit('updateMessages', {'channelName': channelName}, broadcast=True)
@@ -80,12 +92,30 @@ def messageSubmitted(channelName):
 def channelCreated():
     emit('updateChannels', broadcast=True)
 
-@socketio.on('disconnected')
-def disconnected(data):
-    print("eyyy got the disconnected message!")
-    print("The user who disconnected is: " + data['userName'])
-    emit('userDisconnected', broadcast=True)
+#@socketio.on('disconnected')
+#def disconnected(data):
+    #print("eyyy got the disconnected message!")
+    #print("The user who disconnected is: " + data['userName'])
+    #emit('userDisconnected', broadcast=True)
     
+@socketio.on('user entered')
+def userEntry(data):
+    # remove the user from any other channels
+    for key in participants:
+        print(key +"Before:")
+        print(participants[key])
+        if  data["userName"] in participants[key]:
+            participants[key].remove(data["userName"])
+
+    users = participants[data['channelName']]
+    if data['userName'] not in users:
+        users.append(data['userName'])
+
+    for key in participants:
+        print(key + "After: ")
+        print(participants[key])
+
+    emit('userEntered', {'userName': data['userName'], 'channelName': data['channelName']},broadcast=True)
 
 if __name__ == "__main__":
     socketio.run(app)

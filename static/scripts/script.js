@@ -63,6 +63,23 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('userDisconnected', () => {
         console.log('ey a user was disconnected!');
     });
+
+    // a global function that upon a user enterting the chatroom,
+    // sends to the flask server info about his username, and the name of chatroom he entered
+
+    window.myEntry = function userEntered(channel) {
+        console.log('myEntry triggered');
+        socket.emit('user entered', {'userName': this.localStorage.getItem('displayName'), 'channelName': channel});
+    }
+
+    socket.on('userEntered', (data) => {
+        console.log('I got the user entered signal')
+        console.log('The user who entered is: ' + data['userName'])
+        console.log('The channel he entered is: ' + data['channelName'])
+
+        // once a new user has entered, get the list of participants again
+        getParticipants(data['channelName']);
+    });
 })
 
 
@@ -187,24 +204,11 @@ function requestChannels() {
                 
                 getMessages(dataKeys[i]);
 
-                // adding the name of the user who clicked to the list of people in the room
-                //const newUser = document.createElement('p');
-                //newUser.innerHTML = localStorage.getItem('displayName');
-                //newUser.className = "announcement";
-                //newUser.style = "text-align: center;";
+                // on click, execute the userEntry function to signal to the server that a new user has entered the chat
+                window.myEntry(channel.innerHTML);
 
-                // if user already added, dont add him again
-                //for (let i = 0; i < document.querySelector('#whosIn').childElementCount; i++) {
-                   // if (document.querySelector('#whosIn').children[i]['innerText'] == localStorage.getItem('displayName')) {
-                       // break;
-                   // }
-
-                   // else {
-                        // if this is the last pass, append the element
-                      //  if (i == document.querySelector('#whosIn').childElementCount - 1)
-                       // document.querySelector('#whosIn').append(newUser);
-                   // }
-               // }
+                // execute the get participants function
+                getParticipants(channel.innerHTML);
             } );
     
 
@@ -217,7 +221,6 @@ function requestChannels() {
         // if a user has already visited a channel, go there!
         if (localStorage.getItem('channel') != null) {
             const previousChannel = "CH" + localStorage.getItem('channel');
-            console.log(previousChannel)
             
             if (document.getElementById(previousChannel) != null) {
                 document.getElementById(previousChannel).click();
@@ -351,4 +354,36 @@ function messagePost() {
 
     request.send(data);
 
+}
+
+
+function getParticipants(channel) {
+    const request = new XMLHttpRequest();
+    request.open('POST', '/getParticipants');
+    request.onload = () => {
+        const response = JSON.parse(request.responseText);
+        console.log(response)
+
+        // add each participant to the whos in the chat window
+        outer_loop:
+        for (let i = 0; i < response.length; i++) {
+            // if user already exists in chat window, dont add him
+            for (let j = 0; j < document.querySelector('#whosIn').childElementCount; j++){
+                if (response[i] == document.querySelector('#whosIn').children[j].innerText) {
+                    continue outer_loop
+                }
+            }
+
+            const user = document.createElement('p');
+            user.innerHTML = response[i];
+            user.className = "participant";
+
+            // add the user to the div
+            document.querySelector('#whosIn').append(user);
+        }
+    };
+
+    const data = new FormData();
+    data.append('channel', channel);
+    request.send(data);
 }
