@@ -92,18 +92,17 @@ def messageSubmitted(channelName):
 def channelCreated():
     emit('updateChannels', broadcast=True)
 
-#@socketio.on('disconnected')
-#def disconnected(data):
-    #print("eyyy got the disconnected message!")
-    #print("The user who disconnected is: " + data['userName'])
-    #emit('userDisconnected', broadcast=True)
+@socketio.on('disconnected')
+def disconnected(data):
+    # remove the user that disconnected from the participants array
+    participants[data['channelLeft']].remove(data['userName'])
+
+    emit('userDisconnected',{'channelLeft': data['channelLeft']}, broadcast=True)
     
 @socketio.on('user entered')
 def userEntry(data):
     # remove the user from any other channels
     for key in participants:
-        print(key +"Before:")
-        print(participants[key])
         if  data["userName"] in participants[key]:
             participants[key].remove(data["userName"])
 
@@ -111,11 +110,8 @@ def userEntry(data):
     if data['userName'] not in users:
         users.append(data['userName'])
 
-    for key in participants:
-        print(key + "After: ")
-        print(participants[key])
-
-    emit('userEntered', {'userName': data['userName'], 'channelName': data['channelName']},broadcast=True)
+    emit('userEntered', {'userName': data['userName'], 'channelName': data['channelName'],
+         'previousChannel': data['previousChannel']},broadcast=True)
 
 if __name__ == "__main__":
     socketio.run(app)

@@ -114,3 +114,13 @@ body, html {
     margin: 4px;
     text-align: center;
 }
+
+
+.whosIn {
+    padding-left: 0px;
+}
+
+
+.noPad {
+    padding-right: 5px;
+}

@@ -1,7 +1,6 @@
 // Checking if user already provided display name
 document.addEventListener('DOMContentLoaded', () => {
     // checking how it looks when local storage is cleared
-    //! localStorage.clear();
     let check = localStorage.getItem("displayName");
     
     // if not, hide rest of site, reveal displayname creation
@@ -16,13 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#userName').innerHTML = "Welcome " + check;
     }
 
-
     // populate list of channels
     requestChannels();
-
-
-    
-
 
     // create a socket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
@@ -57,28 +51,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // once someone closes the window, disconnect the socket
     window.onbeforeunload = () => {
-        socket.emit('disconnected', {"userName": localStorage.getItem('displayName')});
+        socket.emit('disconnected', {"userName": localStorage.getItem('displayName'),
+                    'channelLeft': localStorage.getItem('channel')});
     }
 
-    socket.on('userDisconnected', () => {
-        console.log('ey a user was disconnected!');
+    socket.on('userDisconnected', (data) => {
+        // refresh the participants of the channel that was left
+        getParticipants(data['channelLeft']);
     });
 
     // a global function that upon a user enterting the chatroom,
     // sends to the flask server info about his username, and the name of chatroom he entered
 
     window.myEntry = function userEntered(channel) {
-        console.log('myEntry triggered');
-        socket.emit('user entered', {'userName': this.localStorage.getItem('displayName'), 'channelName': channel});
+        socket.emit('user entered', {'userName': this.localStorage.getItem('displayName'),
+                     'channelName': channel, 'previousChannel': this.localStorage.getItem('previousChannel')});
     }
 
     socket.on('userEntered', (data) => {
-        console.log('I got the user entered signal')
-        console.log('The user who entered is: ' + data['userName'])
-        console.log('The channel he entered is: ' + data['channelName'])
 
-        // once a new user has entered, get the list of participants again
-        getParticipants(data['channelName']);
+        // once a new user has entered, get the list of participants again,
+        // only if the current channel is the one being entered, or the one being left
+        if (document.querySelector('#channelNameHeader').innerHTML == data['channelName']){
+            getParticipants(data['channelName']);
+        }
+        
+        if (document.querySelector('#channelNameHeader').innerHTML == data['previousChannel']){
+            getParticipants(data['previousChannel']);
+        }
+        
     });
 })
 
@@ -199,9 +200,15 @@ function requestChannels() {
                 document.querySelector('#messageType').disabled = "";
                 document.querySelector('#messageType').placeholder = "enter message";
 
+                // if user visited a channel before, remember the channel
+                if (localStorage.getItem('channel') != null){
+                    localStorage.setItem('previousChannel', localStorage.getItem('channel'));
+                }
+
                 // adding the name of the channel to local storage
                 localStorage.setItem('channel', channel.innerHTML);
-                
+            
+                // get the messages associated with that channel from the flask server
                 getMessages(dataKeys[i]);
 
                 // on click, execute the userEntry function to signal to the server that a new user has entered the chat
@@ -358,11 +365,17 @@ function messagePost() {
 
 
 function getParticipants(channel) {
+    // delete the previous participants
+    document.querySelector('#whosIn').remove();
+
+    // create new div with same id
+    const newDiv = document.createElement('div')
+    newDiv.id = "whosIn";
+    document.querySelector('#whosInAppend').append(newDiv);
     const request = new XMLHttpRequest();
     request.open('POST', '/getParticipants');
     request.onload = () => {
         const response = JSON.parse(request.responseText);
-        console.log(response)
 
         // add each participant to the whos in the chat window
         outer_loop:

@@ -21,10 +21,10 @@
         <div style="height: 95%;">
             <div class="container-fluid" hidden="true" id="nameForm">
                 <br>
-                <h3 style="text-align: center; color: green">Please submit a display name</h3>
+                <h3 style="text-align: center; color: blue">Please submit a display name</h3>
                 <br>
                 <form action="" class="col-4 offset-4" onsubmit="addDisplayName()">
-                    <input type="text" class="form-control" style="text-align: center;" placeholder="name" id="displayName">
+                    <input type="text" class="form-control" style="text-align: center; border-radius: 25px;" placeholder="name" id="displayName">
                     <input type="submit" class="form-control btn btn-primary">
                 </form>
             </div>
@@ -56,7 +56,7 @@
 
 
                 <! Chat Room>
-                <div style="height: 96%;" class="col-8">
+                <div style="height: 96%;" class="col-8 noPad">
                     <div id="chatroom" class="chatroom">
                         <div class="col-12 channelTitle">
                             <h1 id="channelNameHeader">No Channel Selected</h1>
@@ -72,8 +72,11 @@
                     </div>
                 </div>
 
-                <div id="whosIn">
+                <div id="whosInAppend" class="col-1 whosIn">
                     <h6 class="announcement">Whos in the chat:</h6>
+                    <div id="whosIn">
+                        
+                    </div>
                 </div>
 
                 <div style="height: 5%;" class="col-8 offset-3">
